@@ -4,10 +4,12 @@
       <div class="card-header-content">
         <div class="title-section">
           <mat-card-title>
-            <mat-icon>create</mat-icon>
-            Crear Nuevo Post
+            <mat-icon>{{ isEditMode ? 'edit' : 'create' }}</mat-icon>
+            {{ isEditMode ? 'Editar Post' : 'Crear Nuevo Post' }}
           </mat-card-title>
-          <mat-card-subtitle>Completa los campos para crear una nueva publicación</mat-card-subtitle>
+          <mat-card-subtitle>
+            {{ isEditMode ? 'Modifica los campos del post existente' : 'Completa los campos para crear una nueva publicación' }}
+          </mat-card-subtitle>
         </div>
         <button mat-icon-button (click)="onCancel()" matTooltip="Cancelar">
           <mat-icon>close</mat-icon>
@@ -20,7 +22,7 @@
         <!-- Loading overlay -->
         <div *ngIf="loading" class="loading-overlay">
           <mat-spinner diameter="40"></mat-spinner>
-          <span>Creando post...</span>
+          <span>{{ isEditMode ? 'Cargando post...' : 'Creando post...' }}</span>
         </div>
 
         <!-- Title Field -->
@@ -107,9 +109,9 @@
             mat-raised-button 
             color="primary"
             [disabled]="postForm.invalid || loading || isSubmitting">
-            <mat-icon *ngIf="!loading">save</mat-icon>
+            <mat-icon *ngIf="!loading">{{ isEditMode ? 'update' : 'save' }}</mat-icon>
             <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
-            {{ loading ? 'Creando...' : 'Crear Post' }}
+            {{ loading ? (isEditMode ? 'Actualizando...' : 'Creando...') : (isEditMode ? 'Actualizar Post' : 'Crear Post') }}
           </button>
         </div>
       </form>

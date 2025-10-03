@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,7 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { PostService } from '../../../core/services/post.service';
-import { CreatePost } from '../../../core/models/post.model';
+import { CreatePost, UpdatePost, Post } from '../../../core/models/post.model';
 import { Subject, takeUntil, finalize } from 'rxjs';
 
 @Component({
@@ -35,15 +35,20 @@ export class PostForm implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly postService = inject(PostService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroy$ = new Subject<void>();
 
   postForm!: FormGroup;
   loading = false;
   isSubmitting = false;
+  isEditMode = false;
+  postId: number | null = null;
+  currentPost: Post | null = null;
 
   ngOnInit(): void {
     this.initializeForm();
+    this.checkEditMode();
   }
 
   ngOnDestroy(): void {
@@ -68,6 +73,61 @@ export class PostForm implements OnInit, OnDestroy {
         Validators.required,
         Validators.min(1)
       ]]
+    });
+  }
+
+  /**
+   * Verifica si está en modo edición y carga los datos
+   */
+  private checkEditMode(): void {
+    this.route.params
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const id = params['id'];
+        if (id && id !== 'new') {
+          this.isEditMode = true;
+          this.postId = +id;
+          this.loadPostForEdit();
+        }
+      });
+  }
+
+  /**
+   * Carga el post para edición
+   */
+  private loadPostForEdit(): void {
+    if (!this.postId) return;
+
+    this.loading = true;
+    this.postService.getPost(this.postId)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (post) => {
+          this.currentPost = post;
+          this.populateForm(post);
+        },
+        error: (error) => {
+          this.snackBar.open('Error al cargar el post: ' + error.message, 'Cerrar', {
+            duration: 3000
+          });
+          this.router.navigate(['/posts']);
+        }
+      });
+  }
+
+  /**
+   * Pobla el formulario con los datos del post
+   */
+  private populateForm(post: Post): void {
+    this.postForm.patchValue({
+      title: post.title,
+      body: post.body,
+      userId: post.userId
     });
   }
 
@@ -128,32 +188,77 @@ export class PostForm implements OnInit, OnDestroy {
       this.isSubmitting = true;
       this.loading = true;
 
-      const formData: CreatePost = this.postForm.value;
-
-      this.postService.createPost(formData)
-        .pipe(
-          takeUntil(this.destroy$),
-          finalize(() => {
-            this.loading = false;
-            this.isSubmitting = false;
-          })
-        )
-        .subscribe({
-          next: (createdPost) => {
-            this.snackBar.open('Post creado exitosamente', 'Cerrar', {
-              duration: 3000
-            });
-            this.router.navigate(['/posts', createdPost.id]);
-          },
-          error: (error) => {
-            this.snackBar.open('Error al crear el post: ' + error.message, 'Cerrar', {
-              duration: 3000
-            });
-          }
-        });
+      if (this.isEditMode && this.postId) {
+        this.updatePost();
+      } else {
+        this.createPost();
+      }
     } else {
       this.markFormGroupTouched();
     }
+  }
+
+  /**
+   * Crea un nuevo post
+   */
+  private createPost(): void {
+    const formData: CreatePost = this.postForm.value;
+
+    this.postService.createPost(formData)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.loading = false;
+          this.isSubmitting = false;
+        })
+      )
+      .subscribe({
+        next: (createdPost) => {
+          this.snackBar.open('Post creado exitosamente', 'Cerrar', {
+            duration: 3000
+          });
+          this.router.navigate(['/posts', createdPost.id]);
+        },
+        error: (error) => {
+          this.snackBar.open('Error al crear el post: ' + error.message, 'Cerrar', {
+            duration: 3000
+          });
+        }
+      });
+  }
+
+  /**
+   * Actualiza un post existente
+   */
+  private updatePost(): void {
+    if (!this.postId) return;
+
+    const formData: UpdatePost = {
+      id: this.postId,
+      ...this.postForm.value
+    };
+
+    this.postService.updatePost(formData)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.loading = false;
+          this.isSubmitting = false;
+        })
+      )
+      .subscribe({
+        next: (updatedPost) => {
+          this.snackBar.open('Post actualizado exitosamente', 'Cerrar', {
+            duration: 3000
+          });
+          this.router.navigate(['/posts', updatedPost.id]);
+        },
+        error: (error) => {
+          this.snackBar.open('Error al actualizar el post: ' + error.message, 'Cerrar', {
+            duration: 3000
+          });
+        }
+      });
   }
 
   /**
