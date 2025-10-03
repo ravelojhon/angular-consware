@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
@@ -38,6 +38,7 @@ export class PostsList implements OnInit, OnDestroy {
   private readonly notificationService = inject(NotificationService);
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroy$ = new Subject<void>();
 
   displayedColumns: string[] = ['id', 'title', 'userId', 'actions'];
@@ -45,10 +46,6 @@ export class PostsList implements OnInit, OnDestroy {
   loading = false;
 
   ngOnInit(): void {
-    // Resetear loading después del ciclo de detección de cambios
-    setTimeout(() => {
-      this.loading = false;
-    }, 0);
     this.loadPosts();
   }
 
@@ -65,6 +62,7 @@ export class PostsList implements OnInit, OnDestroy {
 
     this.loading = true;
     this.dataSource = [];
+    this.cdr.detectChanges();
 
     this.postService
       .getPosts()
@@ -72,17 +70,20 @@ export class PostsList implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         finalize(() => {
           this.loading = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe({
         next: (posts) => {
           if (!this.destroy$.closed) {
             this.dataSource = posts.slice(0, 10);
+            this.cdr.detectChanges();
           }
         },
         error: (error) => {
           if (!this.destroy$.closed) {
             this.notificationService.error('Error al cargar los posts: ' + error.message);
+            this.cdr.detectChanges();
           }
         },
       });
@@ -128,11 +129,13 @@ export class PostsList implements OnInit, OnDestroy {
    */
   private performDelete(post: Post): void {
     this.loading = true;
+    this.cdr.detectChanges();
 
     // Simular eliminación exitosa (ya que la API no borra realmente)
     setTimeout(() => {
       this.loading = false;
       this.notificationService.success(`Post "${post.title}" eliminado exitosamente`);
+      this.cdr.detectChanges();
       this.loadPosts();
     }, 1000);
   }
