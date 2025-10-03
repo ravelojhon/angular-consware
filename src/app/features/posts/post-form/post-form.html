@@ -8,7 +8,8 @@
             {{ isEditMode ? 'Editar Post' : 'Crear Nuevo Post' }}
           </mat-card-title>
           <mat-card-subtitle>
-            {{ isEditMode ? 'Modifica los campos del post existente' : 'Completa los campos para crear una nueva publicación' }}
+            {{ isEditMode ? 'Modifica los campos del post existente' : 'Completa los campos para crear una nueva
+            publicación' }}
           </mat-card-subtitle>
         </div>
         <button mat-icon-button (click)="onCancel()" matTooltip="Cancelar">
@@ -25,32 +26,24 @@
           <span>{{ isEditMode ? 'Cargando post...' : 'Creando post...' }}</span>
         </div>
 
-                <!-- Title Field -->
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Título del Post</mat-label>
-                  <input
-                    matInput
-                    formControlName="title"
-                    placeholder="Ingresa el título del post"
-                    maxlength="100">
-                  <mat-icon matSuffix>title</mat-icon>
-                  <mat-hint>Mínimo 15 caracteres</mat-hint>
-                  <mat-error *ngIf="hasError('title', 'required')">
-                    {{ getErrorMessage('title') }}
-                  </mat-error>
-                  <mat-error *ngIf="hasError('title', 'minlength')">
-                    {{ getErrorMessage('title') }}
-                  </mat-error>
-                </mat-form-field>
+        <!-- Title Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Título del Post</mat-label>
+          <input matInput formControlName="title" placeholder="Ingresa el título del post" maxlength="100">
+          <mat-icon matSuffix>title</mat-icon>
+          <mat-hint>Mínimo 15 caracteres</mat-hint>
+          <mat-error *ngIf="hasError('title', 'required')">
+            {{ getErrorMessage('title') }}
+          </mat-error>
+          <mat-error *ngIf="hasError('title', 'minlength')">
+            {{ getErrorMessage('title') }}
+          </mat-error>
+        </mat-form-field>
 
         <!-- Body Field -->
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Contenido del Post</mat-label>
-          <textarea
-            matInput
-            formControlName="body"
-            placeholder="Escribe el contenido del post aquí..."
-            rows="6"
+          <textarea matInput formControlName="body" placeholder="Escribe el contenido del post aquí..." rows="6"
             maxlength="500">
           </textarea>
           <mat-icon matSuffix>description</mat-icon>
@@ -66,12 +59,7 @@
         <!-- User ID Field -->
         <mat-form-field appearance="outline" class="user-id-field">
           <mat-label>ID de Usuario</mat-label>
-          <input 
-            matInput 
-            type="number" 
-            formControlName="userId" 
-            placeholder="1"
-            min="1">
+          <input matInput type="number" formControlName="userId" placeholder="1" min="1">
           <mat-icon matSuffix>person</mat-icon>
           <mat-hint>ID del usuario que crea el post</mat-hint>
           <mat-error *ngIf="hasError('userId', 'required')">
@@ -86,32 +74,22 @@
 
         <!-- Form Actions -->
         <div class="form-actions">
-          <button 
-            type="button" 
-            mat-stroked-button 
-            (click)="onCancel()"
-            [disabled]="loading">
+          <button type="button" mat-stroked-button (click)="onCancel()" [disabled]="loading">
             <mat-icon>arrow_back</mat-icon>
             Cancelar
           </button>
-          
-          <button 
-            type="button" 
-            mat-stroked-button 
-            (click)="onReset()"
-            [disabled]="loading">
+
+          <button type="button" mat-stroked-button (click)="onReset()" [disabled]="loading">
             <mat-icon>refresh</mat-icon>
             Limpiar
           </button>
-          
-          <button 
-            type="submit" 
-            mat-raised-button 
-            color="primary"
+
+          <button type="submit" mat-raised-button color="primary"
             [disabled]="postForm.invalid || loading || isSubmitting">
             <mat-icon *ngIf="!loading">{{ isEditMode ? 'update' : 'save' }}</mat-icon>
             <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
-            {{ loading ? (isEditMode ? 'Actualizando...' : 'Creando...') : (isEditMode ? 'Actualizar Post' : 'Crear Post') }}
+            {{ loading ? (isEditMode ? 'Actualizando...' : 'Creando...') : (isEditMode ? 'Actualizar Post' : 'Crear
+            Post') }}
           </button>
         </div>
       </form>
