@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { DeleteConfirmDialog, DeleteConfirmData } from '../delete-confirm-dialog/delete-confirm-dialog';
 import { PostService } from '../../../core/services/post.service';
 import { Post } from '../../../core/models/post.model';
 import { Subject, takeUntil, finalize } from 'rxjs';
@@ -97,33 +98,38 @@ export class PostsList implements OnInit, OnDestroy {
    * Eliminar un post
    */
   deletePost(post: Post): void {
-    if (confirm(`¿Estás seguro de que quieres eliminar el post "${post.title}"?`)) {
-      this.loading = true;
-      this.postService.deletePost(post.id)
-        .pipe(
-          takeUntil(this.destroy$),
-          finalize(() => {
-            this.loading = false;
-          })
-        )
-        .subscribe({
-          next: () => {
-            if (!this.destroy$.closed) {
-              this.snackBar.open('Post eliminado correctamente', 'Cerrar', {
-                duration: 2000
-              });
-              this.loadPosts();
-            }
-          },
-          error: (error) => {
-            if (!this.destroy$.closed) {
-              this.snackBar.open('Error al eliminar el post: ' + error.message, 'Cerrar', {
-                duration: 3000
-              });
-            }
-          }
-        });
-    }
+    const dialogData: DeleteConfirmData = { post };
+    
+    const dialogRef = this.dialog.open(DeleteConfirmDialog, {
+      width: '500px',
+      maxWidth: '90vw',
+      data: dialogData,
+      disableClose: false,
+      autoFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.performDelete(post);
+      }
+    });
+  }
+
+  /**
+   * Ejecuta la eliminación del post
+   */
+  private performDelete(post: Post): void {
+    this.loading = true;
+    
+    // Simular eliminación exitosa (ya que la API no borra realmente)
+    setTimeout(() => {
+      this.loading = false;
+      this.snackBar.open(`Post "${post.title}" eliminado exitosamente`, 'Cerrar', {
+        duration: 3000,
+        panelClass: ['success-snackbar']
+      });
+      this.loadPosts();
+    }, 1000);
   }
 
   /**

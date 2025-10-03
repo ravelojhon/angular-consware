@@ -1,0 +1,162 @@
+.delete-dialog {
+  min-width: 400px;
+  max-width: 500px;
+
+  h2[mat-dialog-title] {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #d32f2f;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+
+    mat-icon {
+      font-size: 1.5rem;
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+
+  .dialog-content {
+    .warning-text {
+      font-size: 1.1rem;
+      color: #333;
+      margin: 0 0 1.5rem 0;
+      font-weight: 500;
+    }
+
+    .post-preview {
+      background-color: #f5f5f5;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+
+      .post-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+
+        .post-id {
+          background-color: #e3f2fd;
+          color: #1976d2;
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          font-weight: 600;
+        }
+
+        .user-id {
+          color: #666;
+        }
+      }
+
+      .post-title {
+        color: #2c3e50;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0 0 0.75rem 0;
+        line-height: 1.4;
+      }
+
+      .post-body {
+        color: #666;
+        line-height: 1.5;
+        margin: 0;
+        font-size: 0.9rem;
+      }
+    }
+
+    .warning-message {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: #fff3e0;
+      color: #e65100;
+      padding: 0.75rem;
+      border-radius: 4px;
+      border-left: 4px solid #ff9800;
+      font-size: 0.9rem;
+      font-weight: 500;
+
+      mat-icon {
+        font-size: 1.2rem;
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+    }
+  }
+
+  [mat-dialog-actions] {
+    padding: 1rem 0 0 0;
+    margin: 0;
+
+    button {
+      min-width: 120px;
+      height: 40px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      mat-icon {
+        font-size: 1.1rem;
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+
+      &[color="warn"] {
+        background-color: #d32f2f;
+        color: white;
+
+        &:hover {
+          background-color: #b71c1c;
+        }
+      }
+
+      &[color="primary"] {
+        color: #1976d2;
+
+        &:hover {
+          background-color: rgba(25, 118, 210, 0.1);
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 480px) {
+  .delete-dialog {
+    min-width: 300px;
+    max-width: 350px;
+
+    h2[mat-dialog-title] {
+      font-size: 1.3rem;
+    }
+
+    .dialog-content {
+      .post-preview {
+        padding: 0.75rem;
+
+        .post-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+        }
+      }
+    }
+
+    [mat-dialog-actions] {
+      flex-direction: column;
+      gap: 0.5rem;
+
+      button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+}

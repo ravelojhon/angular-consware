@@ -1,0 +1,39 @@
+<div class="delete-dialog">
+  <h2 mat-dialog-title>
+    <mat-icon color="warn">warning</mat-icon>
+    Confirmar Eliminación
+  </h2>
+  
+  <mat-dialog-content>
+    <div class="dialog-content">
+      <p class="warning-text">
+        ¿Estás seguro de que quieres eliminar este post?
+      </p>
+      
+      <div class="post-preview">
+        <div class="post-header">
+          <span class="post-id">#{{ data.post.id }}</span>
+          <span class="user-id">👤 User {{ data.post.userId }}</span>
+        </div>
+        <h3 class="post-title">{{ data.post.title }}</h3>
+        <p class="post-body">{{ data.post.body | slice:0:100 }}{{ data.post.body.length > 100 ? '...' : '' }}</p>
+      </div>
+      
+      <div class="warning-message">
+        <mat-icon color="warn">info</mat-icon>
+        <span>Esta acción no se puede deshacer.</span>
+      </div>
+    </div>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" color="primary">
+      <mat-icon>cancel</mat-icon>
+      Cancelar
+    </button>
+    <button mat-raised-button (click)="onConfirm()" color="warn">
+      <mat-icon>delete</mat-icon>
+      Eliminar
+    </button>
+  </mat-dialog-actions>
+</div>
