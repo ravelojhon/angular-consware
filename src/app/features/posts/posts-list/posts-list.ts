@@ -90,10 +90,7 @@ export class PostsList implements OnInit, OnDestroy {
    * Editar un post
    */
   editPost(post: Post): void {
-    this.snackBar.open(`Editando post: ${post.title}`, 'Cerrar', {
-      duration: 2000
-    });
-    // Aquí se implementaría la lógica para editar
+    this.router.navigate(['/posts', post.id, 'edit']);
   }
 
   /**

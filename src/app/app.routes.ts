@@ -9,6 +9,7 @@ export const routes: Routes = [
   { path: 'test-api', component: TestApi },
   { path: 'posts', component: PostsList },
   { path: 'posts/new', component: PostForm },
+  { path: 'posts/:id/edit', component: PostForm },
   { path: 'posts/:id', component: PostDetail },
   { path: '**', redirectTo: '' }
 ];
