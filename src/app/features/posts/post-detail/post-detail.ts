@@ -1,45 +1,53 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { MatTableModule } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
 import { PostService } from '../../../core/services/post.service';
 import { Post } from '../../../core/models/post.model';
 import { Subject, takeUntil, finalize } from 'rxjs';
 
 @Component({
-  selector: 'app-posts-list',
+  selector: 'app-post-detail',
   imports: [
     CommonModule,
-    MatTableModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatChipsModule,
+    MatDividerModule
   ],
-  templateUrl: './posts-list.html',
-  styleUrl: './posts-list.scss'
+  templateUrl: './post-detail.html',
+  styleUrl: './post-detail.scss'
 })
-export class PostsList implements OnInit, OnDestroy {
+export class PostDetail implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly postService = inject(PostService);
   private readonly snackBar = inject(MatSnackBar);
-  private readonly dialog = inject(MatDialog);
-  private readonly router = inject(Router);
   private readonly destroy$ = new Subject<void>();
 
-  displayedColumns: string[] = ['id', 'title', 'userId', 'actions'];
-  dataSource: Post[] = [];
+  post: Post | null = null;
   loading = false;
+  postId: number | null = null;
 
   ngOnInit(): void {
-    this.loadPosts();
+    this.route.params
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const newPostId = +params['id'];
+        if (newPostId && newPostId !== this.postId) {
+          this.postId = newPostId;
+          this.loadPost();
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -48,15 +56,15 @@ export class PostsList implements OnInit, OnDestroy {
   }
 
   /**
-   * Carga los posts limitados a 10
+   * Carga el post específico por ID
    */
-  loadPosts(): void {
-    if (this.destroy$.closed) return;
-    
+  loadPost(): void {
+    if (!this.postId || this.destroy$.closed) return;
+
     this.loading = true;
-    this.dataSource = [];
+    this.post = null;
     
-    this.postService.getPosts()
+    this.postService.getPost(this.postId!)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => {
@@ -64,45 +72,50 @@ export class PostsList implements OnInit, OnDestroy {
         })
       )
       .subscribe({
-        next: (posts) => {
+        next: (post) => {
           if (!this.destroy$.closed) {
-            this.dataSource = posts.slice(0, 10);
+            this.post = post;
           }
         },
         error: (error) => {
           if (!this.destroy$.closed) {
-            this.snackBar.open('Error al cargar los posts: ' + error.message, 'Cerrar', {
+            this.snackBar.open('Error al cargar el post: ' + error.message, 'Cerrar', {
               duration: 3000
             });
+            this.router.navigate(['/posts']);
           }
         }
       });
   }
 
   /**
-   * Ver detalles de un post
+   * Regresa a la lista de posts
    */
-  viewPost(post: Post): void {
-    this.router.navigate(['/posts', post.id]);
+  goBack(): void {
+    this.router.navigate(['/posts']);
   }
 
   /**
-   * Editar un post
+   * Edita el post actual
    */
-  editPost(post: Post): void {
-    this.snackBar.open(`Editando post: ${post.title}`, 'Cerrar', {
-      duration: 2000
-    });
-    // Aquí se implementaría la lógica para editar
+  editPost(): void {
+    if (this.post) {
+      this.snackBar.open(`Editando post: ${this.post.title}`, 'Cerrar', {
+        duration: 2000
+      });
+      // Aquí se implementaría la lógica para editar
+    }
   }
 
   /**
-   * Eliminar un post
+   * Elimina el post actual
    */
-  deletePost(post: Post): void {
-    if (confirm(`¿Estás seguro de que quieres eliminar el post "${post.title}"?`)) {
+  deletePost(): void {
+    if (!this.post) return;
+
+    if (confirm(`¿Estás seguro de que quieres eliminar el post "${this.post.title}"?`)) {
       this.loading = true;
-      this.postService.deletePost(post.id)
+      this.postService.deletePost(this.post.id)
         .pipe(
           takeUntil(this.destroy$),
           finalize(() => {
@@ -115,7 +128,7 @@ export class PostsList implements OnInit, OnDestroy {
               this.snackBar.open('Post eliminado correctamente', 'Cerrar', {
                 duration: 2000
               });
-              this.loadPosts();
+              this.router.navigate(['/posts']);
             }
           },
           error: (error) => {
@@ -130,11 +143,11 @@ export class PostsList implements OnInit, OnDestroy {
   }
 
   /**
-   * Refresca la lista de posts
+   * Refresca el post actual
    */
-  refreshPosts(): void {
-    if (!this.destroy$.closed) {
-      this.loadPosts();
+  refreshPost(): void {
+    if (this.postId && !this.destroy$.closed) {
+      this.loadPost();
     }
   }
 }

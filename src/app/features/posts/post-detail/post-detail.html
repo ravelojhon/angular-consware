@@ -1,0 +1,91 @@
+<div class="post-detail-container">
+  <!-- Loading spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Cargando post...</p>
+  </div>
+
+  <!-- Post detail -->
+  <div *ngIf="!loading && post" class="post-detail-content">
+    <!-- Header with navigation -->
+    <div class="post-header">
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1>Detalle del Post</h1>
+      <div class="header-actions">
+        <button mat-icon-button (click)="refreshPost()" matTooltip="Refrescar post">
+          <mat-icon>refresh</mat-icon>
+        </button>
+        <button mat-icon-button (click)="editPost()" matTooltip="Editar post">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deletePost()" matTooltip="Eliminar post" color="warn">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Post content -->
+    <mat-card class="post-card">
+      <!-- Loading overlay for refresh -->
+      <div *ngIf="loading && post" class="loading-overlay">
+        <mat-spinner diameter="30"></mat-spinner>
+        <span>Actualizando...</span>
+      </div>
+      <mat-card-header>
+        <div class="post-meta">
+          <mat-chip-set>
+            <mat-chip color="primary" selected>
+              <mat-icon matChipAvatar>tag</mat-icon>
+              ID: {{ post.id }}
+            </mat-chip>
+            <mat-chip color="accent" selected>
+              <mat-icon matChipAvatar>person</mat-icon>
+              Usuario {{ post.userId }}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="post-content">
+          <h2 class="post-title">{{ post.title }}</h2>
+          
+          <mat-divider></mat-divider>
+          
+          <div class="post-body">
+            <h3>Contenido:</h3>
+            <p>{{ post.body }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="editPost()">
+          <mat-icon>edit</mat-icon>
+          Editar Post
+        </button>
+        <button mat-raised-button color="warn" (click)="deletePost()">
+          <mat-icon>delete</mat-icon>
+          Eliminar Post
+        </button>
+        <button mat-stroked-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Volver a la Lista
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="!loading && !post" class="error-state">
+    <mat-icon>error_outline</mat-icon>
+    <h2>Post no encontrado</h2>
+    <p>El post que buscas no existe o ha sido eliminado.</p>
+    <button mat-raised-button color="primary" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Volver a la Lista
+    </button>
+  </div>
+</div>
