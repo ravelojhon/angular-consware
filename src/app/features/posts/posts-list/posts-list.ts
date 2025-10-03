@@ -137,4 +137,11 @@ export class PostsList implements OnInit, OnDestroy {
       this.loadPosts();
     }
   }
+
+  /**
+   * Navega al formulario de creación
+   */
+  createPost(): void {
+    this.router.navigate(['/posts/new']);
+  }
 }

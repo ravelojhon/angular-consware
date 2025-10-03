@@ -44,11 +44,24 @@
           }
         }
 
-        button {
-          color: #1976d2;
-          
-          &:hover {
-            background-color: rgba(25, 118, 210, 0.1);
+        .header-actions {
+          display: flex;
+          gap: 0.5rem;
+
+          button {
+            color: #1976d2;
+            
+            &:hover {
+              background-color: rgba(25, 118, 210, 0.1);
+            }
+
+            &[color="primary"] {
+              color: #1976d2;
+              
+              &:hover {
+                background-color: rgba(25, 118, 210, 0.2);
+              }
+            }
           }
         }
       }

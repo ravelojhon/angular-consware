@@ -1,0 +1,118 @@
+<div class="post-form-container">
+  <mat-card>
+    <mat-card-header>
+      <div class="card-header-content">
+        <div class="title-section">
+          <mat-card-title>
+            <mat-icon>create</mat-icon>
+            Crear Nuevo Post
+          </mat-card-title>
+          <mat-card-subtitle>Completa los campos para crear una nueva publicación</mat-card-subtitle>
+        </div>
+        <button mat-icon-button (click)="onCancel()" matTooltip="Cancelar">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
+        <!-- Loading overlay -->
+        <div *ngIf="loading" class="loading-overlay">
+          <mat-spinner diameter="40"></mat-spinner>
+          <span>Creando post...</span>
+        </div>
+
+        <!-- Title Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Título del Post</mat-label>
+          <input 
+            matInput 
+            formControlName="title" 
+            placeholder="Ingresa el título del post"
+            maxlength="100">
+          <mat-icon matSuffix>title</mat-icon>
+          <mat-hint>Mínimo 3 caracteres</mat-hint>
+          <mat-error *ngIf="hasError('title', 'required')">
+            {{ getErrorMessage('title') }}
+          </mat-error>
+          <mat-error *ngIf="hasError('title', 'minlength')">
+            {{ getErrorMessage('title') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Body Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contenido del Post</mat-label>
+          <textarea 
+            matInput 
+            formControlName="body" 
+            placeholder="Escribe el contenido del post aquí..."
+            rows="6"
+            maxlength="500">
+          </textarea>
+          <mat-icon matSuffix>description</mat-icon>
+          <mat-hint>Mínimo 10 caracteres</mat-hint>
+          <mat-error *ngIf="hasError('body', 'required')">
+            {{ getErrorMessage('body') }}
+          </mat-error>
+          <mat-error *ngIf="hasError('body', 'minlength')">
+            {{ getErrorMessage('body') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- User ID Field -->
+        <mat-form-field appearance="outline" class="user-id-field">
+          <mat-label>ID de Usuario</mat-label>
+          <input 
+            matInput 
+            type="number" 
+            formControlName="userId" 
+            placeholder="1"
+            min="1">
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-hint>ID del usuario que crea el post</mat-hint>
+          <mat-error *ngIf="hasError('userId', 'required')">
+            {{ getErrorMessage('userId') }}
+          </mat-error>
+          <mat-error *ngIf="hasError('userId', 'min')">
+            {{ getErrorMessage('userId') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-divider></mat-divider>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button 
+            type="button" 
+            mat-stroked-button 
+            (click)="onCancel()"
+            [disabled]="loading">
+            <mat-icon>arrow_back</mat-icon>
+            Cancelar
+          </button>
+          
+          <button 
+            type="button" 
+            mat-stroked-button 
+            (click)="onReset()"
+            [disabled]="loading">
+            <mat-icon>refresh</mat-icon>
+            Limpiar
+          </button>
+          
+          <button 
+            type="submit" 
+            mat-raised-button 
+            color="primary"
+            [disabled]="postForm.invalid || loading || isSubmitting">
+            <mat-icon *ngIf="!loading">save</mat-icon>
+            <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+            {{ loading ? 'Creando...' : 'Crear Post' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
