@@ -8,7 +8,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { DeleteConfirmDialog, DeleteConfirmData } from '../delete-confirm-dialog/delete-confirm-dialog';
+import {
+  DeleteConfirmDialog,
+  DeleteConfirmData,
+} from '../delete-confirm-dialog/delete-confirm-dialog';
 import { PostService } from '../../../core/services/post.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Post } from '../../../core/models/post.model';
@@ -24,10 +27,10 @@ import { Subject, takeUntil, finalize } from 'rxjs';
     MatIconModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
   ],
   templateUrl: './posts-list.html',
-  styleUrl: './posts-list.scss'
+  styleUrl: './posts-list.scss',
 })
 export class PostsList implements OnInit, OnDestroy {
   private readonly postService = inject(PostService);
@@ -42,8 +45,10 @@ export class PostsList implements OnInit, OnDestroy {
   loading = false;
 
   ngOnInit(): void {
-    // Resetear loading global al inicializar
-    this.loading = false;
+    // Resetear loading después del ciclo de detección de cambios
+    setTimeout(() => {
+      this.loading = false;
+    }, 0);
     this.loadPosts();
   }
 
@@ -57,11 +62,12 @@ export class PostsList implements OnInit, OnDestroy {
    */
   loadPosts(): void {
     if (this.destroy$.closed) return;
-    
+
     this.loading = true;
     this.dataSource = [];
-    
-    this.postService.getPosts()
+
+    this.postService
+      .getPosts()
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => {
@@ -74,11 +80,11 @@ export class PostsList implements OnInit, OnDestroy {
             this.dataSource = posts.slice(0, 10);
           }
         },
-                error: (error) => {
-                  if (!this.destroy$.closed) {
-                    this.notificationService.error('Error al cargar los posts: ' + error.message);
-                  }
-                }
+        error: (error) => {
+          if (!this.destroy$.closed) {
+            this.notificationService.error('Error al cargar los posts: ' + error.message);
+          }
+        },
       });
   }
 
@@ -101,16 +107,16 @@ export class PostsList implements OnInit, OnDestroy {
    */
   deletePost(post: Post): void {
     const dialogData: DeleteConfirmData = { post };
-    
+
     const dialogRef = this.dialog.open(DeleteConfirmDialog, {
       width: '500px',
       maxWidth: '90vw',
       data: dialogData,
       disableClose: false,
-      autoFocus: false
+      autoFocus: false,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result === true) {
         this.performDelete(post);
       }
@@ -122,7 +128,7 @@ export class PostsList implements OnInit, OnDestroy {
    */
   private performDelete(post: Post): void {
     this.loading = true;
-    
+
     // Simular eliminación exitosa (ya que la API no borra realmente)
     setTimeout(() => {
       this.loading = false;
