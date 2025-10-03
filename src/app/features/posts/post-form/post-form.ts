@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { PostService } from '../../../core/services/post.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { CreatePost, UpdatePost, Post } from '../../../core/models/post.model';
 import { Subject, takeUntil, finalize } from 'rxjs';
 
@@ -37,6 +38,7 @@ export class PostForm implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly notificationService = inject(NotificationService);
   private readonly destroy$ = new Subject<void>();
 
   postForm!: FormGroup;
@@ -111,12 +113,10 @@ export class PostForm implements OnInit, OnDestroy {
           this.currentPost = post;
           this.populateForm(post);
         },
-        error: (error) => {
-          this.snackBar.open('Error al cargar el post: ' + error.message, 'Cerrar', {
-            duration: 3000
-          });
-          this.router.navigate(['/posts']);
-        }
+                error: (error) => {
+                  this.notificationService.error('Error al cargar el post: ' + error.message);
+                  this.router.navigate(['/posts']);
+                }
       });
   }
 
@@ -212,19 +212,15 @@ export class PostForm implements OnInit, OnDestroy {
           this.isSubmitting = false;
         })
       )
-      .subscribe({
-        next: (createdPost) => {
-          this.snackBar.open('Post creado exitosamente', 'Cerrar', {
-            duration: 3000
-          });
-          this.router.navigate(['/posts', createdPost.id]);
-        },
-        error: (error) => {
-          this.snackBar.open('Error al crear el post: ' + error.message, 'Cerrar', {
-            duration: 3000
-          });
-        }
-      });
+              .subscribe({
+                next: (createdPost) => {
+                  this.notificationService.success('Post creado exitosamente');
+                  this.router.navigate(['/posts', createdPost.id]);
+                },
+                error: (error) => {
+                  this.notificationService.error('Error al crear el post: ' + error.message);
+                }
+              });
   }
 
   /**
@@ -246,19 +242,15 @@ export class PostForm implements OnInit, OnDestroy {
           this.isSubmitting = false;
         })
       )
-      .subscribe({
-        next: (updatedPost) => {
-          this.snackBar.open('Post actualizado exitosamente', 'Cerrar', {
-            duration: 3000
-          });
-          this.router.navigate(['/posts', updatedPost.id]);
-        },
-        error: (error) => {
-          this.snackBar.open('Error al actualizar el post: ' + error.message, 'Cerrar', {
-            duration: 3000
-          });
-        }
-      });
+              .subscribe({
+                next: (updatedPost) => {
+                  this.notificationService.success('Post actualizado exitosamente');
+                  this.router.navigate(['/posts', updatedPost.id]);
+                },
+                error: (error) => {
+                  this.notificationService.error('Error al actualizar el post: ' + error.message);
+                }
+              });
   }
 
   /**

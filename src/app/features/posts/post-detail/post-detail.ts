@@ -11,6 +11,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { DeleteConfirmDialog, DeleteConfirmData } from '../delete-confirm-dialog/delete-confirm-dialog';
 import { PostService } from '../../../core/services/post.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { Post } from '../../../core/models/post.model';
 import { Subject, takeUntil, finalize } from 'rxjs';
 
@@ -35,6 +36,7 @@ export class PostDetail implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly postService = inject(PostService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly notificationService = inject(NotificationService);
   private readonly dialog = inject(MatDialog);
   private readonly destroy$ = new Subject<void>();
 
@@ -81,14 +83,12 @@ export class PostDetail implements OnInit, OnDestroy {
             this.post = post;
           }
         },
-        error: (error) => {
-          if (!this.destroy$.closed) {
-            this.snackBar.open('Error al cargar el post: ' + error.message, 'Cerrar', {
-              duration: 3000
-            });
-            this.router.navigate(['/posts']);
-          }
-        }
+                error: (error) => {
+                  if (!this.destroy$.closed) {
+                    this.notificationService.error('Error al cargar el post: ' + error.message);
+                    this.router.navigate(['/posts']);
+                  }
+                }
       });
   }
 
@@ -142,10 +142,7 @@ export class PostDetail implements OnInit, OnDestroy {
     // Simular eliminación exitosa (ya que la API no borra realmente)
     setTimeout(() => {
       this.loading = false;
-      this.snackBar.open(`Post "${this.post!.title}" eliminado exitosamente`, 'Cerrar', {
-        duration: 3000,
-        panelClass: ['success-snackbar']
-      });
+      this.notificationService.success(`Post "${this.post!.title}" eliminado exitosamente`);
       this.router.navigate(['/posts']);
     }, 1000);
   }

@@ -10,6 +10,7 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { DeleteConfirmDialog, DeleteConfirmData } from '../delete-confirm-dialog/delete-confirm-dialog';
 import { PostService } from '../../../core/services/post.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { Post } from '../../../core/models/post.model';
 import { Subject, takeUntil, finalize } from 'rxjs';
 
@@ -31,6 +32,7 @@ import { Subject, takeUntil, finalize } from 'rxjs';
 export class PostsList implements OnInit, OnDestroy {
   private readonly postService = inject(PostService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly notificationService = inject(NotificationService);
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
   private readonly destroy$ = new Subject<void>();
@@ -70,13 +72,11 @@ export class PostsList implements OnInit, OnDestroy {
             this.dataSource = posts.slice(0, 10);
           }
         },
-        error: (error) => {
-          if (!this.destroy$.closed) {
-            this.snackBar.open('Error al cargar los posts: ' + error.message, 'Cerrar', {
-              duration: 3000
-            });
-          }
-        }
+                error: (error) => {
+                  if (!this.destroy$.closed) {
+                    this.notificationService.error('Error al cargar los posts: ' + error.message);
+                  }
+                }
       });
   }
 
@@ -124,10 +124,7 @@ export class PostsList implements OnInit, OnDestroy {
     // Simular eliminación exitosa (ya que la API no borra realmente)
     setTimeout(() => {
       this.loading = false;
-      this.snackBar.open(`Post "${post.title}" eliminado exitosamente`, 'Cerrar', {
-        duration: 3000,
-        panelClass: ['success-snackbar']
-      });
+      this.notificationService.success(`Post "${post.title}" eliminado exitosamente`);
       this.loadPosts();
     }, 1000);
   }
