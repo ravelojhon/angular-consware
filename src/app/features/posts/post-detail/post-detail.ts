@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -38,6 +38,7 @@ export class PostDetail implements OnInit, OnDestroy {
   private readonly snackBar = inject(MatSnackBar);
   private readonly notificationService = inject(NotificationService);
   private readonly dialog = inject(MatDialog);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroy$ = new Subject<void>();
 
   post: Post | null = null;
@@ -69,26 +70,30 @@ export class PostDetail implements OnInit, OnDestroy {
 
     this.loading = true;
     this.post = null;
-    
+    this.cdr.detectChanges();
+
     this.postService.getPost(this.postId!)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => {
           this.loading = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe({
         next: (post) => {
           if (!this.destroy$.closed) {
             this.post = post;
+            this.cdr.detectChanges();
           }
         },
-                error: (error) => {
-                  if (!this.destroy$.closed) {
-                    this.notificationService.error('Error al cargar el post: ' + error.message);
-                    this.router.navigate(['/posts']);
-                  }
-                }
+        error: (error) => {
+          if (!this.destroy$.closed) {
+            this.notificationService.error('Error al cargar el post: ' + error.message);
+            this.cdr.detectChanges();
+            this.router.navigate(['/posts']);
+          }
+        }
       });
   }
 
@@ -138,11 +143,13 @@ export class PostDetail implements OnInit, OnDestroy {
     if (!this.post) return;
 
     this.loading = true;
-    
+    this.cdr.detectChanges();
+
     // Simular eliminación exitosa (ya que la API no borra realmente)
     setTimeout(() => {
       this.loading = false;
       this.notificationService.success(`Post "${this.post!.title}" eliminado exitosamente`);
+      this.cdr.detectChanges();
       this.router.navigate(['/posts']);
     }, 1000);
   }
