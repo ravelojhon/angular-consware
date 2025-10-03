@@ -6,9 +6,10 @@ import { PostForm } from '../post-form/post-form';
 
 const routes: Routes = [
   { path: '', component: PostsList },
-  { path: 'new', component: PostForm },
-  { path: ':id/edit', component: PostForm },
-  { path: ':id', component: PostDetail }
+  { path: 'posts', component: PostsList },
+  { path: 'posts/new', component: PostForm },
+  { path: 'posts/:id/edit', component: PostForm },
+  { path: 'posts/:id', component: PostDetail }
 ];
 
 @NgModule({

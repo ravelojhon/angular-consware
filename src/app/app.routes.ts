@@ -7,9 +7,5 @@ export const routes: Routes = [
     loadChildren: () => import('./features/posts/posts/posts-module').then(m => m.PostsModule)
   },
   { path: 'test-api', component: TestApi },
-  { 
-    path: 'posts', 
-    loadChildren: () => import('./features/posts/posts/posts-module').then(m => m.PostsModule)
-  },
   { path: '**', redirectTo: '' }
 ];
