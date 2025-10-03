@@ -25,36 +25,36 @@
           <span>{{ isEditMode ? 'Cargando post...' : 'Creando post...' }}</span>
         </div>
 
-        <!-- Title Field -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Título del Post</mat-label>
-          <input 
-            matInput 
-            formControlName="title" 
-            placeholder="Ingresa el título del post"
-            maxlength="100">
-          <mat-icon matSuffix>title</mat-icon>
-          <mat-hint>Mínimo 3 caracteres</mat-hint>
-          <mat-error *ngIf="hasError('title', 'required')">
-            {{ getErrorMessage('title') }}
-          </mat-error>
-          <mat-error *ngIf="hasError('title', 'minlength')">
-            {{ getErrorMessage('title') }}
-          </mat-error>
-        </mat-form-field>
+                <!-- Title Field -->
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Título del Post</mat-label>
+                  <input
+                    matInput
+                    formControlName="title"
+                    placeholder="Ingresa el título del post"
+                    maxlength="100">
+                  <mat-icon matSuffix>title</mat-icon>
+                  <mat-hint>Mínimo 15 caracteres</mat-hint>
+                  <mat-error *ngIf="hasError('title', 'required')">
+                    {{ getErrorMessage('title') }}
+                  </mat-error>
+                  <mat-error *ngIf="hasError('title', 'minlength')">
+                    {{ getErrorMessage('title') }}
+                  </mat-error>
+                </mat-form-field>
 
         <!-- Body Field -->
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Contenido del Post</mat-label>
-          <textarea 
-            matInput 
-            formControlName="body" 
+          <textarea
+            matInput
+            formControlName="body"
             placeholder="Escribe el contenido del post aquí..."
             rows="6"
             maxlength="500">
           </textarea>
           <mat-icon matSuffix>description</mat-icon>
-          <mat-hint>Mínimo 10 caracteres</mat-hint>
+          <mat-hint>Mínimo 20 caracteres</mat-hint>
           <mat-error *ngIf="hasError('body', 'required')">
             {{ getErrorMessage('body') }}
           </mat-error>

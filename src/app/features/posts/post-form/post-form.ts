@@ -63,8 +63,8 @@ export class PostForm implements OnInit, OnDestroy {
    */
   private initializeForm(): void {
     this.postForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3)]],
-      body: ['', [Validators.required, Validators.minLength(10)]],
+      title: ['', [Validators.required, Validators.minLength(15)]],
+      body: ['', [Validators.required, Validators.minLength(20)]],
       userId: [1, [Validators.required, Validators.min(1)]],
     });
   }
