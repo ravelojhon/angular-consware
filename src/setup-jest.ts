@@ -26,18 +26,31 @@ Object.defineProperty(document.body.style, 'transform', {
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-};
+  constructor(public callback: ResizeObserverCallback) {}
+
+  observe(target: Element, options?: ResizeObserverOptions): void {}
+  unobserve(target: Element): void {}
+  disconnect(): void {}
+} as any;
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-};
+  root: Element | null = null;
+  rootMargin: string = '0px';
+  thresholds: ReadonlyArray<number> = [0];
+
+  constructor(
+    public callback: IntersectionObserverCallback,
+    public options?: IntersectionObserverInit
+  ) {}
+
+  observe(target: Element): void {}
+  unobserve(target: Element): void {}
+  disconnect(): void {}
+  takeRecords(): IntersectionObserverEntry[] {
+    return [];
+  }
+} as any;
 
 // Mock matchMedia
 Object.defineProperty(window, 'matchMedia', {

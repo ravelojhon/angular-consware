@@ -260,9 +260,11 @@ loadPosts(): void {
 ### JSONPlaceholder
 
 - **Solo lectura**: Los cambios no se persisten
-- **Límite de posts**: 100 posts disponibles
+- **Límite de posts**: 100 posts disponibles (IDs 1-100)
 - **Sin autenticación**: No requiere API key
 - **Rate limiting**: Sin límites específicos
+- **Posts creados**: Devuelven ID > 100 pero no existen realmente
+- **Posts actualizados**: Los cambios no se guardan en la API
 
 ### Para Producción
 

@@ -27,10 +27,10 @@ import { Subject, takeUntil, finalize } from 'rxjs';
     MatIconModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
-    MatDividerModule
+    MatDividerModule,
   ],
   templateUrl: './post-form.html',
-  styleUrl: './post-form.scss'
+  styleUrl: './post-form.scss',
 })
 export class PostForm implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
@@ -63,18 +63,9 @@ export class PostForm implements OnInit, OnDestroy {
    */
   private initializeForm(): void {
     this.postForm = this.fb.group({
-      title: ['', [
-        Validators.required,
-        Validators.minLength(3)
-      ]],
-      body: ['', [
-        Validators.required,
-        Validators.minLength(10)
-      ]],
-      userId: [1, [
-        Validators.required,
-        Validators.min(1)
-      ]]
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      body: ['', [Validators.required, Validators.minLength(10)]],
+      userId: [1, [Validators.required, Validators.min(1)]],
     });
   }
 
@@ -82,16 +73,14 @@ export class PostForm implements OnInit, OnDestroy {
    * Verifica si está en modo edición y carga los datos
    */
   private checkEditMode(): void {
-    this.route.params
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(params => {
-        const id = params['id'];
-        if (id && id !== 'new') {
-          this.isEditMode = true;
-          this.postId = +id;
-          this.loadPostForEdit();
-        }
-      });
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      const id = params['id'];
+      if (id && id !== 'new') {
+        this.isEditMode = true;
+        this.postId = +id;
+        this.loadPostForEdit();
+      }
+    });
   }
 
   /**
@@ -101,7 +90,8 @@ export class PostForm implements OnInit, OnDestroy {
     if (!this.postId) return;
 
     this.loading = true;
-    this.postService.getPost(this.postId)
+    this.postService
+      .getPost(this.postId)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => {
@@ -113,10 +103,10 @@ export class PostForm implements OnInit, OnDestroy {
           this.currentPost = post;
           this.populateForm(post);
         },
-                error: (error) => {
-                  this.notificationService.error('Error al cargar el post: ' + error.message);
-                  this.router.navigate(['/posts']);
-                }
+        error: (error) => {
+          this.notificationService.error('Error al cargar el post: ' + error.message);
+          this.router.navigate(['/posts']);
+        },
       });
   }
 
@@ -127,7 +117,7 @@ export class PostForm implements OnInit, OnDestroy {
     this.postForm.patchValue({
       title: post.title,
       body: post.body,
-      userId: post.userId
+      userId: post.userId,
     });
   }
 
@@ -151,20 +141,20 @@ export class PostForm implements OnInit, OnDestroy {
    */
   getErrorMessage(controlName: string): string {
     const control = this.getFormControl(controlName);
-    
+
     if (control?.hasError('required')) {
       return `${this.getFieldLabel(controlName)} es requerido`;
     }
-    
+
     if (control?.hasError('minlength')) {
       const requiredLength = control.errors?.['minlength']?.requiredLength;
       return `${this.getFieldLabel(controlName)} debe tener al menos ${requiredLength} caracteres`;
     }
-    
+
     if (control?.hasError('min')) {
       return `${this.getFieldLabel(controlName)} debe ser mayor a 0`;
     }
-    
+
     return '';
   }
 
@@ -175,7 +165,7 @@ export class PostForm implements OnInit, OnDestroy {
     const labels: { [key: string]: string } = {
       title: 'El título',
       body: 'El contenido',
-      userId: 'El ID de usuario'
+      userId: 'El ID de usuario',
     };
     return labels[controlName] || controlName;
   }
@@ -204,7 +194,8 @@ export class PostForm implements OnInit, OnDestroy {
   private createPost(): void {
     const formData: CreatePost = this.postForm.value;
 
-    this.postService.createPost(formData)
+    this.postService
+      .createPost(formData)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => {
@@ -212,15 +203,16 @@ export class PostForm implements OnInit, OnDestroy {
           this.isSubmitting = false;
         })
       )
-              .subscribe({
-                next: (createdPost) => {
-                  this.notificationService.success('Post creado exitosamente');
-                  this.router.navigate(['/posts', createdPost.id]);
-                },
-                error: (error) => {
-                  this.notificationService.error('Error al crear el post: ' + error.message);
-                }
-              });
+      .subscribe({
+        next: (createdPost) => {
+          this.notificationService.success('Post creado exitosamente');
+          // Navegar a la lista ya que el post no existe realmente en la API
+          this.router.navigate(['/posts']);
+        },
+        error: (error) => {
+          this.notificationService.error('Error al crear el post: ' + error.message);
+        },
+      });
   }
 
   /**
@@ -231,10 +223,11 @@ export class PostForm implements OnInit, OnDestroy {
 
     const formData: UpdatePost = {
       id: this.postId,
-      ...this.postForm.value
+      ...this.postForm.value,
     };
 
-    this.postService.updatePost(formData)
+    this.postService
+      .updatePost(formData)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => {
@@ -242,22 +235,23 @@ export class PostForm implements OnInit, OnDestroy {
           this.isSubmitting = false;
         })
       )
-              .subscribe({
-                next: (updatedPost) => {
-                  this.notificationService.success('Post actualizado exitosamente');
-                  this.router.navigate(['/posts', updatedPost.id]);
-                },
-                error: (error) => {
-                  this.notificationService.error('Error al actualizar el post: ' + error.message);
-                }
-              });
+      .subscribe({
+        next: (updatedPost) => {
+          this.notificationService.success('Post actualizado exitosamente');
+          // Navegar a la lista ya que los cambios no se persisten en la API
+          this.router.navigate(['/posts']);
+        },
+        error: (error) => {
+          this.notificationService.error('Error al actualizar el post: ' + error.message);
+        },
+      });
   }
 
   /**
    * Marca todos los campos como tocados para mostrar errores
    */
   private markFormGroupTouched(): void {
-    Object.keys(this.postForm.controls).forEach(key => {
+    Object.keys(this.postForm.controls).forEach((key) => {
       const control = this.postForm.get(key);
       control?.markAsTouched();
     });
@@ -270,7 +264,7 @@ export class PostForm implements OnInit, OnDestroy {
     this.postForm.reset({
       title: '',
       body: '',
-      userId: 1
+      userId: 1,
     });
   }
 

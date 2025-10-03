@@ -24,6 +24,12 @@ Esta aplicación demuestra las mejores prácticas de desarrollo Angular, incluye
 - **🔄 Loading Global**: Indicadores de carga automáticos
 - **📱 Responsive**: Diseño adaptable a todos los dispositivos
 
+### ⚠️ Nota sobre la API
+Esta aplicación utiliza [JSONPlaceholder](https://jsonplaceholder.typicode.com) como API de prueba, que es **solo de lectura**. Los posts creados y editados no se persisten realmente en la API, por lo que:
+- Los posts creados devuelven un ID > 100 pero no existen en la API
+- Los posts editados no guardan los cambios permanentemente
+- Después de crear/editar, la aplicación navega de vuelta a la lista
+
 ### 🛠️ Tecnologías Utilizadas
 - **Angular 20** - Framework principal
 - **Angular Material** - Componentes UI
