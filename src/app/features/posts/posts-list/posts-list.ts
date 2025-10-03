@@ -42,6 +42,8 @@ export class PostsList implements OnInit, OnDestroy {
   loading = false;
 
   ngOnInit(): void {
+    // Resetear loading global al inicializar
+    this.loading = false;
     this.loadPosts();
   }
 

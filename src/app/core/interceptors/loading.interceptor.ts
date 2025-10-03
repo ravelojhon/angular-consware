@@ -29,7 +29,10 @@ export class LoadingInterceptor implements HttpInterceptor {
       finalize(() => {
         // Ocultar loading al finalizar (éxito o error)
         if (!req.url.includes('test-api')) {
-          this.loadingService.hide();
+          // Usar setTimeout para asegurar que el loading se oculte después de la navegación
+          setTimeout(() => {
+            this.loadingService.hide();
+          }, 100);
         }
       })
     );

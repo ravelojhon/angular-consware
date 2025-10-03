@@ -31,7 +31,10 @@ export class LoadingService {
   hide(): void {
     this.loadingCount = Math.max(0, this.loadingCount - 1);
     if (this.loadingCount === 0) {
-      this.loadingSubject.next(false);
+      // Usar setTimeout para asegurar que el estado se actualice correctamente
+      setTimeout(() => {
+        this.loadingSubject.next(false);
+      }, 0);
     }
   }
 

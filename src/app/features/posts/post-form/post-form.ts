@@ -203,16 +203,19 @@ export class PostForm implements OnInit, OnDestroy {
           this.isSubmitting = false;
         })
       )
-      .subscribe({
-        next: (createdPost) => {
-          this.notificationService.success('Post creado exitosamente');
-          // Navegar a la lista ya que el post no existe realmente en la API
-          this.router.navigate(['/posts']);
-        },
-        error: (error) => {
-          this.notificationService.error('Error al crear el post: ' + error.message);
-        },
-      });
+       .subscribe({
+         next: (createdPost) => {
+           this.notificationService.success('Post creado exitosamente');
+           // Resetear loading antes de navegar
+           this.loading = false;
+           this.isSubmitting = false;
+           // Navegar a la lista ya que el post no existe realmente en la API
+           this.router.navigate(['/posts']);
+         },
+         error: (error) => {
+           this.notificationService.error('Error al crear el post: ' + error.message);
+         },
+       });
   }
 
   /**
@@ -235,16 +238,19 @@ export class PostForm implements OnInit, OnDestroy {
           this.isSubmitting = false;
         })
       )
-      .subscribe({
-        next: (updatedPost) => {
-          this.notificationService.success('Post actualizado exitosamente');
-          // Navegar a la lista ya que los cambios no se persisten en la API
-          this.router.navigate(['/posts']);
-        },
-        error: (error) => {
-          this.notificationService.error('Error al actualizar el post: ' + error.message);
-        },
-      });
+       .subscribe({
+         next: (updatedPost) => {
+           this.notificationService.success('Post actualizado exitosamente');
+           // Resetear loading antes de navegar
+           this.loading = false;
+           this.isSubmitting = false;
+           // Navegar a la lista ya que los cambios no se persisten en la API
+           this.router.navigate(['/posts']);
+         },
+         error: (error) => {
+           this.notificationService.error('Error al actualizar el post: ' + error.message);
+         },
+       });
   }
 
   /**
