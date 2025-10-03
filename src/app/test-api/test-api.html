@@ -1,0 +1,52 @@
+<div class="test-api-container">
+  <h1>🧪 Test API - Posts</h1>
+  
+  <!-- Loading indicator -->
+  <div *ngIf="loading" class="loading">
+    <p>⏳ Cargando posts...</p>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="error" class="error">
+    <p>❌ {{ error }}</p>
+    <button (click)="loadPosts()" class="retry-btn">🔄 Reintentar</button>
+  </div>
+
+  <!-- Posts list -->
+  <div *ngIf="!loading && !error && posts.length > 0" class="posts-section">
+    <h2>📝 Lista de Posts ({{ posts.length }} posts)</h2>
+    <div class="posts-grid">
+      <div *ngFor="let post of posts" class="post-card" (click)="loadPost(post.id)">
+        <div class="post-header">
+          <span class="post-id">#{{ post.id }}</span>
+          <span class="user-id">👤 User {{ post.userId }}</span>
+        </div>
+        <h3 class="post-title">{{ post.title }}</h3>
+        <p class="post-body">{{ post.body | slice:0:100 }}{{ post.body.length > 100 ? '...' : '' }}</p>
+        <button class="view-btn">👁️ Ver detalles</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selected post details -->
+  <div *ngIf="selectedPost" class="selected-post">
+    <div class="selected-post-header">
+      <h2>📄 Post Seleccionado</h2>
+      <button (click)="clearSelectedPost()" class="close-btn">❌ Cerrar</button>
+    </div>
+    <div class="selected-post-content">
+      <div class="post-meta">
+        <span class="post-id">ID: {{ selectedPost.id }}</span>
+        <span class="user-id">Usuario: {{ selectedPost.userId }}</span>
+      </div>
+      <h3 class="post-title">{{ selectedPost.title }}</h3>
+      <p class="post-body">{{ selectedPost.body }}</p>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && !error && posts.length === 0" class="empty-state">
+    <p>📭 No hay posts disponibles</p>
+    <button (click)="loadPosts()" class="load-btn">🔄 Cargar Posts</button>
+  </div>
+</div>
