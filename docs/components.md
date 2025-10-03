@@ -19,9 +19,11 @@ src/app/
 ## 📋 PostsList Component
 
 ### Propósito
+
 Muestra una lista paginada de posts con funcionalidades CRUD.
 
 ### Características
+
 - **Tabla responsiva** con Angular Material
 - **Botones de acción** (Ver, Editar, Eliminar)
 - **Loading states** durante operaciones
@@ -29,6 +31,7 @@ Muestra una lista paginada de posts con funcionalidades CRUD.
 - **Navegación** a otras vistas
 
 ### API
+
 ```typescript
 export class PostsList implements OnInit, OnDestroy {
   // Propiedades
@@ -46,6 +49,7 @@ export class PostsList implements OnInit, OnDestroy {
 ```
 
 ### Template
+
 ```html
 <mat-card>
   <mat-card-header>
@@ -60,15 +64,16 @@ export class PostsList implements OnInit, OnDestroy {
 ```
 
 ### Estilos
+
 ```scss
 .posts-list-container {
   padding: 1rem;
-  
+
   .table-container {
     overflow-x: auto;
     border-radius: 4px;
   }
-  
+
   .actions-container {
     display: flex;
     gap: 0.5rem;
@@ -79,9 +84,11 @@ export class PostsList implements OnInit, OnDestroy {
 ## 👁️ PostDetail Component
 
 ### Propósito
+
 Muestra la información completa de un post específico.
 
 ### Características
+
 - **Vista detallada** con información completa
 - **Chips informativos** para ID y Usuario
 - **Botones de acción** (Editar, Eliminar, Volver)
@@ -89,6 +96,7 @@ Muestra la información completa de un post específico.
 - **Manejo de errores** con redirección
 
 ### API
+
 ```typescript
 export class PostDetail implements OnInit, OnDestroy {
   // Propiedades
@@ -105,6 +113,7 @@ export class PostDetail implements OnInit, OnDestroy {
 ```
 
 ### Template
+
 ```html
 <mat-card class="post-card">
   <mat-card-header>
@@ -125,9 +134,11 @@ export class PostDetail implements OnInit, OnDestroy {
 ## ✏️ PostForm Component
 
 ### Propósito
+
 Formulario reactivo para crear y editar posts.
 
 ### Características
+
 - **Formulario reactivo** con validaciones
 - **Modo dual** (Crear/Editar)
 - **Validaciones robustas** (required, minLength)
@@ -135,6 +146,7 @@ Formulario reactivo para crear y editar posts.
 - **Loading states** durante operaciones
 
 ### API
+
 ```typescript
 export class PostForm implements OnInit, OnDestroy {
   // Propiedades
@@ -156,27 +168,25 @@ export class PostForm implements OnInit, OnDestroy {
 ```
 
 ### Template
+
 ```html
 <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
   <mat-form-field appearance="outline">
     <mat-label>Título del Post</mat-label>
-    <input matInput formControlName="title">
-    <mat-error *ngIf="hasError('title', 'required')">
-      {{ getErrorMessage('title') }}
-    </mat-error>
+    <input matInput formControlName="title" />
+    <mat-error *ngIf="hasError('title', 'required')"> {{ getErrorMessage('title') }} </mat-error>
   </mat-form-field>
-  
+
   <mat-form-field appearance="outline">
     <mat-label>Contenido del Post</mat-label>
     <textarea matInput formControlName="body" rows="6"></textarea>
-    <mat-error *ngIf="hasError('body', 'required')">
-      {{ getErrorMessage('body') }}
-    </mat-error>
+    <mat-error *ngIf="hasError('body', 'required')"> {{ getErrorMessage('body') }} </mat-error>
   </mat-form-field>
 </form>
 ```
 
 ### Validaciones
+
 ```typescript
 private initializeForm(): void {
   this.postForm = this.fb.group({
@@ -190,15 +200,18 @@ private initializeForm(): void {
 ## 🗑️ DeleteConfirmDialog Component
 
 ### Propósito
+
 Diálogo de confirmación para eliminar posts.
 
 ### Características
+
 - **Preview del post** a eliminar
 - **Botones de confirmación** (Cancelar, Eliminar)
 - **Diseño de advertencia** con colores apropiados
 - **Responsive design** para móviles
 
 ### API
+
 ```typescript
 export class DeleteConfirmDialog {
   constructor(
@@ -212,25 +225,24 @@ export class DeleteConfirmDialog {
 ```
 
 ### Template
+
 ```html
 <div class="delete-dialog">
   <h2 mat-dialog-title>
     <mat-icon color="warn">warning</mat-icon>
     Confirmar Eliminación
   </h2>
-  
+
   <mat-dialog-content>
     <div class="post-preview">
       <h3>{{ data.post.title }}</h3>
       <p>{{ data.post.body | slice:0:100 }}</p>
     </div>
   </mat-dialog-content>
-  
+
   <mat-dialog-actions>
     <button mat-button (click)="onCancel()">Cancelar</button>
-    <button mat-raised-button color="warn" (click)="onConfirm()">
-      Eliminar
-    </button>
+    <button mat-raised-button color="warn" (click)="onConfirm()">Eliminar</button>
   </mat-dialog-actions>
 </div>
 ```
@@ -238,15 +250,18 @@ export class DeleteConfirmDialog {
 ## 🔄 GlobalLoading Component
 
 ### Propósito
+
 Overlay de loading global para operaciones HTTP.
 
 ### Características
+
 - **Overlay completo** que cubre la pantalla
 - **Spinner animado** de Angular Material
 - **Mensaje de estado** dinámico
 - **Diseño elegante** con blur de fondo
 
 ### API
+
 ```typescript
 export class GlobalLoading implements OnInit, OnDestroy {
   loading: boolean;
@@ -257,6 +272,7 @@ export class GlobalLoading implements OnInit, OnDestroy {
 ```
 
 ### Template
+
 ```html
 <div *ngIf="loading" class="global-loading-overlay">
   <div class="loading-content">
@@ -269,6 +285,7 @@ export class GlobalLoading implements OnInit, OnDestroy {
 ## 🧪 Testing de Componentes
 
 ### PostsList Tests
+
 ```typescript
 describe('PostsListComponent', () => {
   it('should load posts on init', () => {
@@ -285,6 +302,7 @@ describe('PostsListComponent', () => {
 ```
 
 ### PostForm Tests
+
 ```typescript
 describe('PostFormComponent', () => {
   it('should validate required fields', () => {
@@ -303,12 +321,14 @@ describe('PostFormComponent', () => {
 ## 🎨 Patrones de Diseño
 
 ### Component Communication
+
 - **Parent → Child**: Input properties
 - **Child → Parent**: Output events
 - **Sibling → Sibling**: Services
 - **Global State**: Services + Observables
 
 ### Lifecycle Hooks
+
 ```typescript
 export class MyComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
@@ -325,6 +345,7 @@ export class MyComponent implements OnInit, OnDestroy {
 ```
 
 ### Error Handling
+
 ```typescript
 loadData(): void {
   this.service.getData().subscribe({
@@ -337,6 +358,7 @@ loadData(): void {
 ## 📱 Responsive Design
 
 ### Breakpoints
+
 ```scss
 // Mobile first
 @media (max-width: 480px) {
@@ -359,12 +381,13 @@ loadData(): void {
 ```
 
 ### Flexbox Layout
+
 ```scss
 .container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  
+
   @media (min-width: 768px) {
     flex-direction: row;
   }
@@ -374,30 +397,32 @@ loadData(): void {
 ## 🔧 Configuración de Componentes
 
 ### Standalone Components
+
 ```typescript
 @Component({
   selector: 'app-my-component',
   standalone: true,
   imports: [CommonModule, MatCardModule],
   templateUrl: './my-component.html',
-  styleUrl: './my-component.scss'
+  styleUrl: './my-component.scss',
 })
 export class MyComponent {}
 ```
 
 ### Module Components
+
 ```typescript
 @Component({
   selector: 'app-my-component',
   templateUrl: './my-component.html',
-  styleUrl: './my-component.scss'
+  styleUrl: './my-component.scss',
 })
 export class MyComponent {}
 
 @NgModule({
   declarations: [MyComponent],
   imports: [CommonModule, MatCardModule],
-  exports: [MyComponent]
+  exports: [MyComponent],
 })
 export class MyModule {}
 ```

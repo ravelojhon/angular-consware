@@ -13,11 +13,13 @@ https://jsonplaceholder.typicode.com
 ### Posts
 
 #### GET /posts
+
 Obtiene todos los posts disponibles.
 
 **URL**: `GET /posts`
 
 **Respuesta**:
+
 ```json
 [
   {
@@ -30,14 +32,17 @@ Obtiene todos los posts disponibles.
 ```
 
 #### GET /posts/:id
+
 Obtiene un post específico por ID.
 
 **URL**: `GET /posts/1`
 
 **Parámetros**:
+
 - `id` (number): ID del post
 
 **Respuesta**:
+
 ```json
 {
   "id": 1,
@@ -48,11 +53,13 @@ Obtiene un post específico por ID.
 ```
 
 #### POST /posts
+
 Crea un nuevo post.
 
 **URL**: `POST /posts`
 
 **Body**:
+
 ```json
 {
   "userId": 1,
@@ -62,6 +69,7 @@ Crea un nuevo post.
 ```
 
 **Respuesta**:
+
 ```json
 {
   "id": 101,
@@ -72,14 +80,17 @@ Crea un nuevo post.
 ```
 
 #### PUT /posts/:id
+
 Actualiza un post completo.
 
 **URL**: `PUT /posts/1`
 
 **Parámetros**:
+
 - `id` (number): ID del post
 
 **Body**:
+
 ```json
 {
   "id": 1,
@@ -90,6 +101,7 @@ Actualiza un post completo.
 ```
 
 **Respuesta**:
+
 ```json
 {
   "id": 1,
@@ -100,14 +112,17 @@ Actualiza un post completo.
 ```
 
 #### PATCH /posts/:id
+
 Actualiza parcialmente un post.
 
 **URL**: `PATCH /posts/1`
 
 **Parámetros**:
+
 - `id` (number): ID del post
 
 **Body**:
+
 ```json
 {
   "title": "Solo título actualizado"
@@ -115,6 +130,7 @@ Actualiza parcialmente un post.
 ```
 
 **Respuesta**:
+
 ```json
 {
   "id": 1,
@@ -125,11 +141,13 @@ Actualiza parcialmente un post.
 ```
 
 #### DELETE /posts/:id
+
 Elimina un post.
 
 **URL**: `DELETE /posts/1`
 
 **Parámetros**:
+
 - `id` (number): ID del post
 
 **Respuesta**: `204 No Content`
@@ -140,7 +158,7 @@ Elimina un post.
 
 ```typescript
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PostService {
   private readonly http = inject(HttpClient);
@@ -198,14 +216,14 @@ export interface UpdatePost {
 
 ## 🚨 Códigos de Error
 
-| Código | Descripción | Acción |
-|--------|-------------|--------|
-| 200 | OK | Operación exitosa |
-| 201 | Created | Recurso creado exitosamente |
-| 204 | No Content | Eliminación exitosa |
-| 400 | Bad Request | Datos inválidos |
-| 404 | Not Found | Recurso no encontrado |
-| 500 | Internal Server Error | Error del servidor |
+| Código | Descripción           | Acción                      |
+| ------ | --------------------- | --------------------------- |
+| 200    | OK                    | Operación exitosa           |
+| 201    | Created               | Recurso creado exitosamente |
+| 204    | No Content            | Eliminación exitosa         |
+| 400    | Bad Request           | Datos inválidos             |
+| 404    | Not Found             | Recurso no encontrado       |
+| 500    | Internal Server Error | Error del servidor          |
 
 ## 🔄 Manejo de Errores
 
@@ -240,12 +258,14 @@ loadPosts(): void {
 ## 📊 Limitaciones de la API
 
 ### JSONPlaceholder
+
 - **Solo lectura**: Los cambios no se persisten
 - **Límite de posts**: 100 posts disponibles
 - **Sin autenticación**: No requiere API key
 - **Rate limiting**: Sin límites específicos
 
 ### Para Producción
+
 - Implementar autenticación
 - Agregar validación de datos
 - Implementar paginación real
@@ -259,11 +279,9 @@ loadPosts(): void {
 ```typescript
 describe('PostService', () => {
   it('should fetch posts', () => {
-    const mockPosts: Post[] = [
-      { id: 1, userId: 1, title: 'Test', body: 'Test body' }
-    ];
+    const mockPosts: Post[] = [{ id: 1, userId: 1, title: 'Test', body: 'Test body' }];
 
-    service.getPosts().subscribe(posts => {
+    service.getPosts().subscribe((posts) => {
       expect(posts).toEqual(mockPosts);
     });
 
@@ -281,10 +299,10 @@ it('should create post and return created post', () => {
   const newPost: CreatePost = {
     userId: 1,
     title: 'New Post',
-    body: 'New body'
+    body: 'New body',
   };
 
-  service.createPost(newPost).subscribe(post => {
+  service.createPost(newPost).subscribe((post) => {
     expect(post.id).toBeDefined();
     expect(post.title).toBe(newPost.title);
   });
@@ -300,7 +318,7 @@ it('should create post and return created post', () => {
 export const environment = {
   production: false,
   apiUrl: 'https://jsonplaceholder.typicode.com',
-  timeout: 5000
+  timeout: 5000,
 };
 ```
 
@@ -311,10 +329,8 @@ export const environment = {
 export class LoadingInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.loadingService.show();
-    
-    return next.handle(req).pipe(
-      finalize(() => this.loadingService.hide())
-    );
+
+    return next.handle(req).pipe(finalize(() => this.loadingService.hide()));
   }
 }
 ```
@@ -326,7 +342,7 @@ export class LoadingInterceptor implements HttpInterceptor {
 ```typescript
 intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   console.log(`🚀 ${req.method} ${req.url}`);
-  
+
   return next.handle(req).pipe(
     tap(event => {
       if (event instanceof HttpResponse) {
@@ -346,7 +362,7 @@ intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> 
 ```typescript
 intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   const start = Date.now();
-  
+
   return next.handle(req).pipe(
     finalize(() => {
       const duration = Date.now() - start;
