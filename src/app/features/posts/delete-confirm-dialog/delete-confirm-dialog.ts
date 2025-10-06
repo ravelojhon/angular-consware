@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,20 +11,13 @@ export interface DeleteConfirmData {
 
 @Component({
   selector: 'app-delete-confirm-dialog',
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule
-  ],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
   templateUrl: './delete-confirm-dialog.html',
-  styleUrl: './delete-confirm-dialog.scss'
+  styleUrl: './delete-confirm-dialog.scss',
 })
 export class DeleteConfirmDialog {
-  constructor(
-    public dialogRef: MatDialogRef<DeleteConfirmDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DeleteConfirmData
-  ) {}
+  public readonly dialogRef = inject(MatDialogRef<DeleteConfirmDialog>);
+  public readonly data = inject(MAT_DIALOG_DATA) as DeleteConfirmData;
 
   /**
    * Confirma la eliminación

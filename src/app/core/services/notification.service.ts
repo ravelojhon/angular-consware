@@ -39,35 +39,35 @@ export class NotificationService {
   /**
    * Muestra una notificación de éxito
    */
-  success(message: string, action: string = 'Cerrar'): void {
+  success(message: string, action = 'Cerrar'): void {
     this.snackBar.open(message, action, this.configs.success);
   }
 
   /**
    * Muestra una notificación de error
    */
-  error(message: string, action: string = 'Cerrar'): void {
+  error(message: string, action = 'Cerrar'): void {
     this.snackBar.open(message, action, this.configs.error);
   }
 
   /**
    * Muestra una notificación de advertencia
    */
-  warning(message: string, action: string = 'Cerrar'): void {
+  warning(message: string, action = 'Cerrar'): void {
     this.snackBar.open(message, action, this.configs.warning);
   }
 
   /**
    * Muestra una notificación informativa
    */
-  info(message: string, action: string = 'Cerrar'): void {
+  info(message: string, action = 'Cerrar'): void {
     this.snackBar.open(message, action, this.configs.info);
   }
 
   /**
    * Muestra una notificación personalizada
    */
-  show(message: string, action: string = 'Cerrar', type: NotificationType = 'info'): void {
+  show(message: string, action = 'Cerrar', type: NotificationType = 'info'): void {
     this.snackBar.open(message, action, this.configs[type]);
   }
 }

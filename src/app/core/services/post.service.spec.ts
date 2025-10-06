@@ -11,7 +11,7 @@ describe('PostService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [PostService]
+      providers: [PostService],
     });
     service = TestBed.inject(PostService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -29,10 +29,10 @@ describe('PostService', () => {
     it('should return an array of posts', () => {
       const mockPosts: Post[] = [
         { id: 1, userId: 1, title: 'Test Post 1', body: 'Test body 1' },
-        { id: 2, userId: 2, title: 'Test Post 2', body: 'Test body 2' }
+        { id: 2, userId: 2, title: 'Test Post 2', body: 'Test body 2' },
       ];
 
-      service.getPosts().subscribe(posts => {
+      service.getPosts().subscribe((posts) => {
         expect(posts).toEqual(mockPosts);
         expect(posts.length).toBe(2);
       });
@@ -50,7 +50,7 @@ describe('PostService', () => {
         error: (error) => {
           expect(error.status).toBe(500);
           expect(error.statusText).toBe(errorMessage);
-        }
+        },
       });
 
       const req = httpMock.expectOne(baseUrl);
@@ -63,7 +63,7 @@ describe('PostService', () => {
       const mockPost: Post = { id: 1, userId: 1, title: 'Test Post', body: 'Test body' };
       const postId = 1;
 
-      service.getPost(postId).subscribe(post => {
+      service.getPost(postId).subscribe((post) => {
         expect(post).toEqual(mockPost);
         expect(post.id).toBe(postId);
       });
@@ -80,7 +80,7 @@ describe('PostService', () => {
         next: () => fail('should have failed'),
         error: (error) => {
           expect(error.status).toBe(404);
-        }
+        },
       });
 
       const req = httpMock.expectOne(`${baseUrl}/${postId}`);
@@ -93,11 +93,11 @@ describe('PostService', () => {
       const newPost: CreatePost = {
         userId: 1,
         title: 'New Post',
-        body: 'New post body'
+        body: 'New post body',
       };
       const createdPost: Post = { id: 101, ...newPost };
 
-      service.createPost(newPost).subscribe(post => {
+      service.createPost(newPost).subscribe((post) => {
         expect(post).toEqual(createdPost);
         expect(post.id).toBe(101);
       });
@@ -112,14 +112,14 @@ describe('PostService', () => {
       const newPost: CreatePost = {
         userId: 1,
         title: 'New Post',
-        body: 'New post body'
+        body: 'New post body',
       };
 
       service.createPost(newPost).subscribe({
         next: () => fail('should have failed'),
         error: (error) => {
           expect(error.status).toBe(400);
-        }
+        },
       });
 
       const req = httpMock.expectOne(baseUrl);
@@ -132,11 +132,16 @@ describe('PostService', () => {
       const updateData: UpdatePost = {
         id: 1,
         title: 'Updated Post',
-        body: 'Updated body'
+        body: 'Updated body',
       };
-      const updatedPost: Post = { id: 1, userId: 1, ...updateData };
+      const updatedPost: Post = {
+        id: 1,
+        userId: 1,
+        title: updateData.title || 'Updated Post',
+        body: updateData.body || 'Updated body',
+      };
 
-      service.updatePost(updateData).subscribe(post => {
+      service.updatePost(updateData).subscribe((post) => {
         expect(post).toEqual(updatedPost);
         expect(post.title).toBe('Updated Post');
       });
@@ -150,14 +155,14 @@ describe('PostService', () => {
     it('should handle update errors', () => {
       const updateData: UpdatePost = {
         id: 1,
-        title: 'Updated Post'
+        title: 'Updated Post',
       };
 
       service.updatePost(updateData).subscribe({
         next: () => fail('should have failed'),
         error: (error) => {
           expect(error.status).toBe(500);
-        }
+        },
       });
 
       const req = httpMock.expectOne(`${baseUrl}/${updateData.id}`);
@@ -171,7 +176,7 @@ describe('PostService', () => {
       const patchData = { title: 'Patched Title' };
       const patchedPost: Post = { id: 1, userId: 1, title: 'Patched Title', body: 'Original body' };
 
-      service.patchPost(postId, patchData).subscribe(post => {
+      service.patchPost(postId, patchData).subscribe((post) => {
         expect(post).toEqual(patchedPost);
         expect(post.title).toBe('Patched Title');
       });
@@ -187,7 +192,7 @@ describe('PostService', () => {
     it('should delete a post', () => {
       const postId = 1;
 
-      service.deletePost(postId).subscribe(response => {
+      service.deletePost(postId).subscribe((response) => {
         expect(response).toBeUndefined();
       });
 
@@ -203,7 +208,7 @@ describe('PostService', () => {
         next: () => fail('should have failed'),
         error: (error) => {
           expect(error.status).toBe(404);
-        }
+        },
       });
 
       const req = httpMock.expectOne(`${baseUrl}/${postId}`);

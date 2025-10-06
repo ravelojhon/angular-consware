@@ -162,7 +162,7 @@ export class PostForm implements OnInit, OnDestroy {
    * Obtiene la etiqueta del campo para mensajes de error
    */
   private getFieldLabel(controlName: string): string {
-    const labels: { [key: string]: string } = {
+    const labels: Record<string, string> = {
       title: 'El título',
       body: 'El contenido',
       userId: 'El ID de usuario',
@@ -203,19 +203,19 @@ export class PostForm implements OnInit, OnDestroy {
           this.isSubmitting = false;
         })
       )
-       .subscribe({
-         next: (createdPost) => {
-           this.notificationService.success('Post creado exitosamente');
-           // Resetear loading antes de navegar
-           this.loading = false;
-           this.isSubmitting = false;
-           // Navegar a la lista ya que el post no existe realmente en la API
-           this.router.navigate(['/posts']);
-         },
-         error: (error) => {
-           this.notificationService.error('Error al crear el post: ' + error.message);
-         },
-       });
+      .subscribe({
+        next: () => {
+          this.notificationService.success('Post creado exitosamente');
+          // Resetear loading antes de navegar
+          this.loading = false;
+          this.isSubmitting = false;
+          // Navegar a la lista ya que el post no existe realmente en la API
+          this.router.navigate(['/posts']);
+        },
+        error: (error) => {
+          this.notificationService.error('Error al crear el post: ' + error.message);
+        },
+      });
   }
 
   /**
@@ -238,19 +238,19 @@ export class PostForm implements OnInit, OnDestroy {
           this.isSubmitting = false;
         })
       )
-       .subscribe({
-         next: (updatedPost) => {
-           this.notificationService.success('Post actualizado exitosamente');
-           // Resetear loading antes de navegar
-           this.loading = false;
-           this.isSubmitting = false;
-           // Navegar a la lista ya que los cambios no se persisten en la API
-           this.router.navigate(['/posts']);
-         },
-         error: (error) => {
-           this.notificationService.error('Error al actualizar el post: ' + error.message);
-         },
-       });
+      .subscribe({
+        next: () => {
+          this.notificationService.success('Post actualizado exitosamente');
+          // Resetear loading antes de navegar
+          this.loading = false;
+          this.isSubmitting = false;
+          // Navegar a la lista ya que los cambios no se persisten en la API
+          this.router.navigate(['/posts']);
+        },
+        error: (error) => {
+          this.notificationService.error('Error al actualizar el post: ' + error.message);
+        },
+      });
   }
 
   /**
