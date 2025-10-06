@@ -137,7 +137,7 @@ describe('PostsListComponent', () => {
       const mockDialogRef = {
         afterClosed: () => of(false),
       };
-      mockDialog.open.and.returnValue(mockDialogRef as any);
+      mockDialog.open.and.returnValue(mockDialogRef as jasmine.SpyObj<MatDialogRef<unknown>>);
 
       component.deletePost(post);
 
@@ -149,7 +149,7 @@ describe('PostsListComponent', () => {
       const mockDialogRef = {
         afterClosed: () => of(true),
       };
-      mockDialog.open.and.returnValue(mockDialogRef as any);
+      mockDialog.open.and.returnValue(mockDialogRef as jasmine.SpyObj<MatDialogRef<unknown>>);
       component.deletePost(post);
 
       expect(mockDialog.open).toHaveBeenCalled();

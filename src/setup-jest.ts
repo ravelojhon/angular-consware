@@ -37,7 +37,7 @@ global.ResizeObserver = class ResizeObserver {
   disconnect(): void {
     // Mock implementation
   }
-} as any;
+} as unknown as typeof ResizeObserver;
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
